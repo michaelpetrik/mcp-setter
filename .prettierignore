@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-electron/
+release/
+build/
+
+# Logs
+*.log
+
+# Coverage
+coverage/
+
+# Misc
+.cache/
+*.tsbuildinfo

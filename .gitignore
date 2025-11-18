@@ -1,0 +1,79 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+dist-electron/
+release/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# Secrets and credentials
+*.key
+*.pem
+*.p12
+*.pfx
+*.cer
+*.crt
+credentials.json
+secrets.json
+token.json
+auth.json
+*.secret
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Electron
+out/
+*.tsbuildinfo
+
+# Backup files
+*.backup
+*.bak
+*.old
+*_backup
+*_backup.*
+*.backup.*
+
+# MCP configuration backups (may contain sensitive data)
+*config*.backup.*
+claude_desktop_config*.backup.*
+
+# Misc
+*.orig
+.cache/
+temp/
+tmp/
+
+# Private notes and local documentation
+NOTES.md
+TODO.md
+PRIVATE.md

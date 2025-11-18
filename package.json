@@ -1,0 +1,125 @@
+{
+  "name": "mcp-setter",
+  "version": "0.1.0",
+  "description": "Cross-platform desktop application for installing MCP servers to different AI services",
+  "main": "dist-electron/main.js",
+  "type": "module",
+  "author": {
+    "name": "MCP Setter Team"
+  },
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "electron",
+    "desktop-app"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev:electron": "npm run build:electron && electron .",
+    "dev:cli": "tsx src/app/cli/index.ts",
+    "build:core": "tsc -p tsconfig.node.json",
+    "build:electron": "tsc -p tsconfig.electron.json",
+    "build:cli": "tsc -p tsconfig.node.json && ncc build src/app/cli/index.ts -o dist-cli",
+    "build:all": "npm run build:core && npm run build:electron && npm run build:cli",
+    "preview": "vite preview",
+    "package": "npm run build:all && electron-builder",
+    "package:mac": "npm run build:all && electron-builder --mac",
+    "package:win": "npm run build:all && electron-builder --win",
+    "package:linux": "npm run build:all && electron-builder --linux",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist dist-electron",
+    "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\""
+  },
+  "dependencies": {
+    "tsyringe": "^4.8.0",
+    "zod": "^3.22.4",
+    "fs-extra": "^11.2.0",
+    "electron-updater": "^6.1.7",
+    "electron-log": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vitest/ui": "^1.2.1",
+    "@playwright/test": "^1.41.0",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.4",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12",
+    "vite-plugin-electron": "^0.28.2",
+    "vitest": "^1.2.1",
+    "@vitest/coverage-v8": "^1.2.1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "build": {
+    "appId": "com.mcpsetter.app",
+    "productName": "MCP Setter",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icon.icns"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "category": "Development",
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
