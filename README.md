@@ -14,14 +14,24 @@ Both frontends consume the same business logic, ensuring consistency and maintai
 
 ## Features
 
-- 🖥️ Cross-platform support (Windows, macOS, Linux)
-- 🤖 Supports multiple AI services (Claude Desktop, and more coming soon)
-- 🔒 Secure configuration management
-- 📦 Easy installation workflow
-- 🔄 Automatic configuration backup and rollback
-- ✅ Configuration validation
-- 🎯 Built with Clean Architecture and SOLID principles
-- 📱 Multiple interfaces (Desktop GUI + CLI) sharing the same core logic
+### ✅ Fully Implemented
+
+- ✅ **MCP Registry Integration** - Search, browse, and fetch servers from official registry
+- ✅ **Multi-Client Support** - Claude Desktop, Claude CLI, Cursor, Continue, Gemini CLI
+- ✅ **Cross-Platform** - Windows, macOS, Linux with OS-specific config detection
+- ✅ **Installation** - Install MCP servers from registry with automatic config
+- ✅ **Credentials Management** - Secure .env file storage next to configs
+- ✅ **Health Checks** - Validate server configuration and credentials
+- ✅ **Backup & Restore** - Full snapshot backups including credentials
+- ✅ **Cross-Client Management** - Copy/move servers between clients
+- ✅ **Complete CLI** - 8 commands with human-readable and JSON output
+- ✅ **Clean Architecture** - SOLID principles, dependency injection, testable
+
+### 🚧 Planned
+
+- 🚧 **Desktop GUI** - Electron app (skeleton exists, needs implementation)
+- 🚧 **Automated Tests** - Unit, integration, E2E tests
+- 🚧 **MCP Server Uninstall** - Remove servers via CLI/GUI
 
 ## Technology Stack
 
@@ -82,23 +92,45 @@ See [AGENTS.md](./AGENTS.md) for detailed development guidelines.
 ```bash
 # Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your API keys
-
-# Install environment variables globally (for Claude Desktop)
-./scripts/install-env-globally.sh
 ```
+
+### Quick Start - CLI
+
+The CLI is **fully functional** and ready to use:
+
+```bash
+# Detect installed MCP clients
+npm run dev:cli detect
+
+# Search the MCP registry
+npm run dev:cli search --query filesystem
+
+# Install an MCP server
+npm run dev:cli install brave-search --client claude-desktop
+
+# List installed servers
+npm run dev:cli installed --client claude-desktop
+
+# Check server health
+npm run dev:cli healthcheck brave-search --client claude-desktop
+
+# Create a backup
+npm run dev:cli backup
+
+# Get help
+npm run dev:cli --help
+```
+
+**📖 Complete CLI Documentation:** [CLI.md](./CLI.md)
 
 ### Development
 
 ```bash
-# Development - Desktop App
-npm run dev:electron     # Run Electron app in dev mode
+# Development - CLI (fully functional)
+npm run dev:cli <command>     # Run any CLI command
 
-# Development - CLI
-npm run dev:cli          # Run CLI in dev mode (when implemented)
+# Development - Desktop App (skeleton only)
+npm run dev:electron          # Run Electron app in dev mode
 
 # Type checking
 npm run type-check
@@ -197,6 +229,7 @@ This project follows strict coding standards:
 
 ## Documentation
 
+- **[CLI.md](./CLI.md)** - Complete CLI usage guide and examples
 - [CLAUDE.md](./CLAUDE.md) - Guidance for Claude Code AI
 - [AGENTS.md](./AGENTS.md) - Core development principles and guidelines
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Detailed architecture documentation
