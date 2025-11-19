@@ -20,6 +20,14 @@ import { NodeConfigLocator } from '@/shared/infrastructure/config-locator/NodeCo
 import { IClientDetector } from '@/features/client-detection/domain/IClientDetector';
 import { MultiClientDetector } from '@/features/client-detection/infrastructure/MultiClientDetector';
 
+// Features - Credentials Management
+import { ICredentialsManager } from '@/features/credentials-management/domain/ICredentialsManager';
+import { DotEnvCredentialsManager } from '@/features/credentials-management/infrastructure/DotEnvCredentialsManager';
+
+// Features - MCP Installation
+import { IConfigManager } from '@/features/mcp-installation/domain/IConfigManager';
+import { JsonConfigManager } from '@/features/mcp-installation/infrastructure/JsonConfigManager';
+
 /**
  * Initialize and configure the DI container
  */
@@ -44,6 +52,14 @@ export function initializeContainer(): void {
   // Register feature services
   container.register<IClientDetector>('IClientDetector', {
     useClass: MultiClientDetector,
+  });
+
+  container.register<ICredentialsManager>('ICredentialsManager', {
+    useClass: DotEnvCredentialsManager,
+  });
+
+  container.register<IConfigManager>('IConfigManager', {
+    useClass: JsonConfigManager,
   });
 
   // Use cases are auto-registered via @injectable() decorator
