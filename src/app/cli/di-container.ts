@@ -1,0 +1,52 @@
+/**
+ * CLI Dependency Injection Container
+ * Registers all dependencies for the CLI application
+ */
+
+import 'reflect-metadata';
+import { container } from 'tsyringe';
+
+// Infrastructure
+import { IFileSystem } from '@/shared/infrastructure/file-system/IFileSystem';
+import { NodeFileSystem } from '@/shared/infrastructure/file-system/NodeFileSystem';
+import { IHttpClient } from '@/shared/infrastructure/http/IHttpClient';
+import { NodeHttpClient } from '@/shared/infrastructure/http/NodeHttpClient';
+import { IMcpRegistryClient } from '@/shared/infrastructure/registry/IMcpRegistryClient';
+import { McpRegistryHttpClient } from '@/shared/infrastructure/registry/McpRegistryHttpClient';
+import { IConfigLocator } from '@/shared/infrastructure/config-locator/IConfigLocator';
+import { NodeConfigLocator } from '@/shared/infrastructure/config-locator/NodeConfigLocator';
+
+// Features - Client Detection
+import { IClientDetector } from '@/features/client-detection/domain/IClientDetector';
+import { MultiClientDetector } from '@/features/client-detection/infrastructure/MultiClientDetector';
+
+/**
+ * Initialize and configure the DI container
+ */
+export function initializeContainer(): void {
+  // Register shared infrastructure
+  container.register<IFileSystem>('IFileSystem', {
+    useClass: NodeFileSystem,
+  });
+
+  container.register<IHttpClient>('IHttpClient', {
+    useClass: NodeHttpClient,
+  });
+
+  container.register<IMcpRegistryClient>('IMcpRegistryClient', {
+    useClass: McpRegistryHttpClient,
+  });
+
+  container.register<IConfigLocator>('IConfigLocator', {
+    useClass: NodeConfigLocator,
+  });
+
+  // Register feature services
+  container.register<IClientDetector>('IClientDetector', {
+    useClass: MultiClientDetector,
+  });
+
+  // Use cases are auto-registered via @injectable() decorator
+}
+
+export { container };

@@ -49,7 +49,8 @@
     "zod": "^3.22.4",
     "fs-extra": "^11.2.0",
     "electron-updater": "^6.1.7",
-    "electron-log": "^5.0.3"
+    "electron-log": "^5.0.3",
+    "commander": "^11.1.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
@@ -71,7 +72,9 @@
     "vite": "^5.0.12",
     "vite-plugin-electron": "^0.28.2",
     "vitest": "^1.2.1",
-    "@vitest/coverage-v8": "^1.2.1"
+    "@vitest/coverage-v8": "^1.2.1",
+    "tsx": "^4.7.0",
+    "@vercel/ncc": "^0.38.1"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
