@@ -10,6 +10,9 @@ import { InstallMcpServerUseCase } from '@/features/mcp-installation/application
 import { ClientType } from '@/shared/domain/value-objects/ClientType';
 import * as output from '../utils/output';
 import { detectOS } from '../utils/os-helper';
+import { withTelemetry } from '../utils/telemetry-helper';
+import { ITelemetryService } from '@/shared/infrastructure/telemetry/ITelemetryService';
+import { TelemetryEventCategory } from '@/shared/domain/events/TelemetryEvents';
 
 export interface InstallCommandOptions {
   serverName: string;
@@ -25,7 +28,21 @@ export interface InstallCommandOptions {
 export async function installCommand(options: InstallCommandOptions): Promise<void> {
   const { serverName, client, customName, skipBackup, json: jsonOutput } = options;
 
-  try {
+  // Track telemetry
+  await withTelemetry('install', options, async () => {
+    try {
+      const telemetryService = container.resolve<ITelemetryService>('ITelemetryService');
+      const startTime = Date.now();
+
+      // Track install started
+      await telemetryService.trackEvent(TelemetryEventCategory.MCP_INSTALL_STARTED, {
+        client_type: client,
+        mcp_server_name: serverName,
+        custom_name_used: !!customName,
+        backup_created: !skipBackup,
+      });
+
+      try {
     const os = detectOS();
 
     // Resolve use cases
@@ -108,8 +125,32 @@ export async function installCommand(options: InstallCommandOptions): Promise<vo
         : `Server ready to use!`,
       `Restart ${client} to load the new server`,
     ]);
-  } catch (err) {
-    output.error(`Installation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
-    process.exit(1);
-  }
+
+        // Track install completed
+        const duration = Date.now() - startTime;
+        await telemetryService.trackEvent(TelemetryEventCategory.MCP_INSTALL_COMPLETED, {
+          client_type: client,
+          mcp_server_name: serverName,
+          mcp_server_version: registryServer.version,
+          custom_name_used: !!customName,
+          backup_created: !!result.backupPath,
+          duration_ms: duration,
+        });
+      } catch (err) {
+        // Track install failed
+        const duration = Date.now() - startTime;
+        await telemetryService.trackEvent(TelemetryEventCategory.MCP_INSTALL_FAILED, {
+          client_type: client,
+          mcp_server_name: serverName,
+          duration_ms: duration,
+        });
+
+        output.error(`Installation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        process.exit(1);
+      }
+    } catch (err) {
+      output.error(`Installation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      process.exit(1);
+    }
+  });
 }
