@@ -28,6 +28,18 @@ import { DotEnvCredentialsManager } from '@/features/credentials-management/infr
 import { IConfigManager } from '@/features/mcp-installation/domain/IConfigManager';
 import { JsonConfigManager } from '@/features/mcp-installation/infrastructure/JsonConfigManager';
 
+// Features - User Preferences
+import { IPreferencesService } from '@/features/user-preferences/domain/IPreferencesService';
+import { JsonPreferencesStorage } from '@/features/user-preferences/infrastructure/JsonPreferencesStorage';
+
+// Telemetry
+import { ITelemetryService } from '@/shared/infrastructure/telemetry/ITelemetryService';
+import { TelemetryServiceFactory } from '@/shared/infrastructure/telemetry/TelemetryServiceFactory';
+
+// Permissions
+import { IPermissionsService } from '@/shared/infrastructure/permissions/IPermissionsService';
+import { NodePermissionsService } from '@/shared/infrastructure/permissions/NodePermissionsService';
+
 /**
  * Initialize and configure the DI container
  */
@@ -60,6 +72,20 @@ export function initializeContainer(): void {
 
   container.register<IConfigManager>('IConfigManager', {
     useClass: JsonConfigManager,
+  });
+
+  container.register<IPreferencesService>('IPreferencesService', {
+    useClass: JsonPreferencesStorage,
+  });
+
+  // Register telemetry service (factory creates the right implementation)
+  container.register<ITelemetryService>('ITelemetryService', {
+    useFactory: () => TelemetryServiceFactory.create(),
+  });
+
+  // Register permissions service
+  container.register<IPermissionsService>('IPermissionsService', {
+    useClass: NodePermissionsService,
   });
 
   // Use cases are auto-registered via @injectable() decorator

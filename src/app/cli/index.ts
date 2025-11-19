@@ -13,6 +13,7 @@ import { installCommand } from './commands/install';
 import { installedCommand } from './commands/installed';
 import { healthcheckCommand } from './commands/healthcheck';
 import { backupCommand, restoreCommand } from './commands/backup';
+import { preferencesShowCommand, preferencesSetCommand } from './commands/preferences';
 import * as output from './utils/output';
 
 // Initialize DI container
@@ -139,6 +140,50 @@ program
       input: file,
       overwrite: options.overwrite,
       skipBackup: options.skipBackup,
+      json: options.json,
+    });
+  });
+
+// Preferences command
+const preferencesCmd = program
+  .command('preferences')
+  .alias('prefs')
+  .description('Manage user preferences and settings');
+
+// Preferences show subcommand
+preferencesCmd
+  .command('show')
+  .description('Show current preferences')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await preferencesShowCommand({
+      json: options.json,
+    });
+  });
+
+// Preferences set subcommand
+preferencesCmd
+  .command('set')
+  .description('Update preferences')
+  .option('--telemetry <boolean>', 'Enable/disable telemetry (true/false)')
+  .option('--default-client <client>', 'Set default client')
+  .option('--auto-backup <boolean>', 'Enable/disable auto backup (true/false)')
+  .option('--verbose <boolean>', 'Enable/disable verbose output (true/false)')
+  .option('--theme <theme>', 'Set theme (light/dark/system)')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    // Parse boolean strings
+    const parseBool = (value: string | undefined): boolean | undefined => {
+      if (value === undefined) return undefined;
+      return value === 'true' || value === '1';
+    };
+
+    await preferencesSetCommand({
+      telemetry: parseBool(options.telemetry),
+      defaultClient: options.defaultClient,
+      autoBackup: parseBool(options.autoBackup),
+      verbose: parseBool(options.verbose),
+      theme: options.theme,
       json: options.json,
     });
   });
